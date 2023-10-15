@@ -1,4 +1,6 @@
-package model;
+package hr.java.production.model;
+
+import java.util.Arrays;
 
 public class Store {
     private String name, webAddress;
@@ -32,5 +34,14 @@ public class Store {
 
     public void setItems(Item[] items) {
         this.items = items;
+    }
+
+    @Override
+    public String toString() {
+        return "Store{" +
+                "name='" + name + '\'' +
+                ", webAddress='" + webAddress + '\'' +
+                ", items=" + Arrays.toString(items) +
+                '}';
     }
 }

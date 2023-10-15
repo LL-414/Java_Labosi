@@ -1,6 +1,4 @@
-package model;
-
-import java.lang.reflect.Array;
+package hr.java.production.model;
 
 public class Address {
     private String street, houseNumber, city, postalCode;

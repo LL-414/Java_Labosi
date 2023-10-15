@@ -1,4 +1,4 @@
-package model;
+package hr.java.production.model;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package model;
+package hr.java.production.model;
 
 public class Category {
     private String name, description;
