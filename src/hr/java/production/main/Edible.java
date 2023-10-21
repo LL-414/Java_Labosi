@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 public interface Edible {
     public boolean isEdible();
-    public int calculateKilocalories();
+
+    int calculateKilocalories(BigDecimal weightKG);
+
     public BigDecimal calculatePrice(BigDecimal weight);
 }

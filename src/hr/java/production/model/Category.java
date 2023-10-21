@@ -3,7 +3,7 @@ package hr.java.production.model;
 import hr.java.production.main.NamedEntity;
 
 public class Category extends NamedEntity {
-    private String name, description;
+    private String  description;
 
     public Category(String name, String description) {
         super(name);

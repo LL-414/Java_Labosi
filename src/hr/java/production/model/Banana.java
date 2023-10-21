@@ -8,14 +8,16 @@ public class Banana extends Item implements Edible {
 
     private static final int caloriesPerKG = 105;
     private BigDecimal weightKG;
+
     @Override
     public boolean isEdible() {
         return true;
     }
 
     @Override
-    public int calculateKilocalories() {
-        return 0;
+    public int calculateKilocalories(BigDecimal weightKG) {
+        BigDecimal totalCalories = weightKG.multiply(new BigDecimal(caloriesPerKG));
+        return totalCalories.intValue();
     }
 
     @Override
@@ -35,10 +37,5 @@ public class Banana extends Item implements Edible {
     public void setWeight(BigDecimal weight) {
         this.weightKG = weight;
     }
-
-
-
-
-
 
 }
