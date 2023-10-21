@@ -1,14 +1,16 @@
 package hr.java.production.model;
 
+import hr.java.production.main.NamedEntity;
+
 import java.util.Arrays;
 
-public class Factory {
+public class Factory extends NamedEntity {
     private String name;
     private Item[] items;
     private Address address;
 
     public Factory(String name, Item[] items, Address address) {
-        this.name = name;
+        super(name);
         this.items = items;
         this.address = address;
     }

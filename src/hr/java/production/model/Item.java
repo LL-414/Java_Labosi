@@ -1,75 +1,87 @@
 package hr.java.production.model;
+import hr.java.production.main.NamedEntity;
 
 import java.math.BigDecimal;
 
-public class Item {
-    private String name;
-    private Category object;
-    private BigDecimal width, height, length, productionCost, sellingPrice;
+public class Item extends NamedEntity {
+    protected Category category;
+    protected BigDecimal width, height, length, productionCost, sellingPrice;
 
-    public Item(String name, Category object, BigDecimal width, BigDecimal height, BigDecimal length, BigDecimal productionCost, BigDecimal sellingPrice) {
-        this.name = name;
-        this.object = object;
-        this.width = width;
-        this.height = height;
-        this.length = length;
-        this.productionCost = productionCost;
-        this.sellingPrice = sellingPrice;
+    protected Item(Builder builder) {
+        super(builder.name);
+        this.category = builder.category;
+        this.width = builder.width;
+        this.height = builder.height;
+        this.length = builder.length;
+        this.productionCost = builder.productionCost;
+        this.sellingPrice = builder.sellingPrice;
     }
 
-    public String getName() {
-        return name;
+    public static class Builder {
+        private String name;
+        private Category category;
+        private BigDecimal width, height, length, productionCost, sellingPrice;
+
+        public Builder(String name) {
+            this.name = name;
+        }
+
+        public Builder category(Category category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder width(BigDecimal width) {
+            this.width = width;
+            return this;
+        }
+
+        public Builder height(BigDecimal height) {
+            this.height = height;
+            return this;
+        }
+
+        public Builder length(BigDecimal length) {
+            this.length = length;
+            return this;
+        }
+
+        public Builder productionCost(BigDecimal productionCost) {
+            this.productionCost = productionCost;
+            return this;
+        }
+
+        public Builder sellingPrice(BigDecimal sellingPrice) {
+            this.sellingPrice = sellingPrice;
+            return this;
+        }
+
+        public Item build() {
+            return new Item(this);
+        }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Category getObject() {
-        return object;
-    }
-
-    public void setObject(Category object) {
-        this.object = object;
+    public Category getCategory() {
+        return category;
     }
 
     public BigDecimal getWidth() {
         return width;
     }
 
-    public void setWidth(BigDecimal width) {
-        this.width = width;
-    }
-
     public BigDecimal getHeight() {
         return height;
-    }
-
-    public void setHeight(BigDecimal height) {
-        this.height = height;
     }
 
     public BigDecimal getLength() {
         return length;
     }
 
-    public void setLength(BigDecimal length) {
-        this.length = length;
-    }
-
     public BigDecimal getProductionCost() {
         return productionCost;
     }
 
-    public void setProductionCost(BigDecimal productionCost) {
-        this.productionCost = productionCost;
-    }
-
     public BigDecimal getSellingPrice() {
         return sellingPrice;
-    }
-
-    public void setSellingPrice(BigDecimal sellingPrice) {
-        this.sellingPrice = sellingPrice;
     }
 }

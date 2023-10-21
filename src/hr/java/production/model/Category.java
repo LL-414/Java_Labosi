@@ -1,13 +1,15 @@
 package hr.java.production.model;
 
-public class Category {
+import hr.java.production.main.NamedEntity;
+
+public class Category extends NamedEntity {
     private String name, description;
 
-
     public Category(String name, String description) {
-        this.name = name;
+        super(name);
         this.description = description;
     }
+
 
     public String getName() {
         return name;
