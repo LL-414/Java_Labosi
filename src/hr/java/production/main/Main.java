@@ -67,7 +67,6 @@ public class Main {
 
     public static int scanInt(int min, int max) {
         Integer choice;
-
         while (true) {
 
             if (scanner.hasNextInt()) {
@@ -101,7 +100,30 @@ public class Main {
         }
         return inputBigDecimal;
     }
-//________________________________________________________________
+
+    public static BigDecimal scanBigDecimal(BigDecimal minBigDecimal, BigDecimal maxBigDecimal) {
+        BigDecimal inputBigDecimal;
+        while (true) {
+
+            if (scanner.hasNextInt()) {
+                inputBigDecimal = scanner.nextBigDecimal();
+                scanner.nextLine();
+                if (inputBigDecimal.compareTo(minBigDecimal) >= 0 && inputBigDecimal.compareTo(maxBigDecimal) <= 0) {
+                    break;
+                } else {
+                    System.out.println("Krivi unos molimo ponovite!");
+                    scanner.nextLine();
+                }
+
+            } else {
+                System.out.println("Krivi unos molimo ponovite!");
+                scanner.nextLine();
+            }
+        }
+        return inputBigDecimal;
+    }
+
+    //________________________________________________________________
     public static Item findMostExpensiveFood(Item[] items) {
         BigDecimal maxPrice = BigDecimal.ZERO;
         Item mostExpensiveFood = null;
@@ -129,7 +151,20 @@ public class Main {
 
         return mostCaloricFood;
     }
-//_______________________________________________________________________
+    public static Item findLaptopWithSmallestWarranty(Item[] items){
+
+        Item laptop = null;
+
+        for (Item item : items) {
+            if (item instanceof Laptop) {
+
+            }
+        }
+
+        return laptop;
+    }
+
+    //_______________________________________________________________________
     public static boolean selectFood() {
         System.out.println("Zelite li birati artikle ili izabrati hranu?");
         System.out.println("Hrana|1|--Ostali artikli|2|");
@@ -141,7 +176,17 @@ public class Main {
             }
         }
     }
-
+    public static boolean selectLaptop() {
+        System.out.println("Zelite li birati artikle ili izabrati Laptop?");
+        System.out.println("Laptop|1|--Ostali artikli|2|");
+        while (true) {
+            if (scanInt(1, 2) == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
     //napisati metodu za hranu sa najvise kalorija te hranu koja je najskuplja
 
@@ -215,7 +260,22 @@ public class Main {
 
 
                 }
+            }else if(selectLaptop()){
+                System.out.print("Molimo unesite garanciju za laptop u trajanju mjeseca:");
+                int garancija = scanInt(1,60);
+                System.out.println("Unesite ime laptopa:");
+                String name = scanner.nextLine();
+                Laptop laptop = new Laptop.LaptopBuilder()
+                        .setBuilder(new Item.Builder(name))
+                        .setWarrantyMonths(garancija)
+                        .build();
+                items[i]= new Item.Builder("Laptop")
+                        .laptop(laptop)
+                        .sellingPrice(BigDecimal.valueOf(600))
+                        .build();
+
             } else {
+
                 System.out.println("Unesite ime " + (i + 1) + ". artikla:");
                 String name = scanner.nextLine();
                 System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
@@ -239,18 +299,26 @@ public class Main {
                 BigDecimal cijenaIzrade = scanner.nextBigDecimal();
                 scanner.nextLine();
                 System.out.println("Unesite prodajnu cijenu " + (i + 1) + ". artikla:");
-                BigDecimal prodajnaCijena = scanner.nextBigDecimal();
-                scanner.nextLine();
+                BigDecimal prodajnaCijena = scanBigDecimal();
 
-
-                items[i] = new Item.Builder(name)
+                Item.Builder itemBuilder = new Item.Builder(name)
                         .category(categories[izbor])
                         .width(sirina)
                         .height(visina)
                         .length(duzina)
-                        .productionCost(cijenaIzrade)
-                        .sellingPrice(prodajnaCijena)
-                        .build();
+                        .productionCost(cijenaIzrade);
+
+                System.out.println("Unesite popust pri prodaji:");
+                BigDecimal discount = scanBigDecimal(BigDecimal.valueOf(0.1), BigDecimal.valueOf(100));
+
+                if (discount.compareTo(BigDecimal.ZERO) > 0) {
+                    // If discount is present, use the builder with discount
+                    BigDecimal discountedPrice = prodajnaCijena.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(100))));
+                    items[i] = itemBuilder.sellingPrice(discountedPrice).build();
+                } else {
+                    // If discount is not present, use the builder without discount
+                    items[i] = itemBuilder.build();
+                }
             }
         }
         return items;
