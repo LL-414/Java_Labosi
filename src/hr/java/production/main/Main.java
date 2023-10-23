@@ -103,22 +103,9 @@ public class Main {
     }
 
     //____________________________________________________________________________________________________________
-    public static String findMostExpensiveFood(Item[] items) {
-        BigDecimal maxPrice = BigDecimal.ZERO;
-        Item mostExpensiveFood = null;
 
-        for (Item item : items) {
-            if (item instanceof Edible) {
-            if(item.getSellingPrice().compareTo(maxPrice)== 1){
-                maxPrice = item.getSellingPrice();
-            }
-            }
-        }
 
-        return null;
-    }
-
-    public static Item findMostCaloricFood(Item[] items) {
+    public static String findMostCaloricFood(Item[] items) {
         int maxCalories = 0;
         Item mostCaloricFood = null;
 
@@ -130,7 +117,29 @@ public class Main {
             }
             }
         }
-        return mostCaloricFood;
+        if(mostCaloricFood == null){
+            return "Nema laptopa";
+        }else{
+            return mostCaloricFood.getName()+" mjeseci garancije:"+ maxCalories;
+        }
+    }
+    public static String findLaptopWithLeasWarranty(Item[] items) {
+        int biggestWarranty = 0;
+        Item laptopWithBestWarranty = null;
+
+        for (Item item : items) {
+            if (item instanceof Technical) {
+                if( ((Technical) item).warranty()>biggestWarranty){
+                    laptopWithBestWarranty = item;
+                    biggestWarranty = ((Technical) item).warranty();
+                }
+            }
+        }
+       if(laptopWithBestWarranty == null){
+        return "Nema laptopa";
+       }else{
+           return laptopWithBestWarranty.getName()+" mjeseci garancije:"+ biggestWarranty;
+       }
     }
     public static Item findLaptopWithSmallestWarranty(Item[] items){
 
@@ -197,17 +206,17 @@ public class Main {
     //____________________________________________________________________________________________________________
 
     public static Item setArticles(int i,Category[] categories,int izbor){
-        System.out.println("Unesite ime " + (i + 1) + ". artikla:");
+        System.out.println("Unesite ime " + (i) + ". artikla:");
         String name = scanner.nextLine();
-        System.out.println("Unesite sirinu " + (i + 1) + ". artikla:");
+        System.out.println("Unesite sirinu " + (i) + ". artikla:");
         BigDecimal sirina = scanBigDecimal();
-        System.out.println("Unesite visinu " + (i + 1) + ". artikla:");
+        System.out.println("Unesite visinu " + (i) + ". artikla:");
         BigDecimal visina = scanBigDecimal();
-        System.out.println("Unesite duzinu " + (i + 1) + ". artikla:");
+        System.out.println("Unesite duzinu " + (i) + ". artikla:");
         BigDecimal duzina = scanBigDecimal();
-        System.out.println("Unesite cijenu izrade " + (i + 1) + ". artikla:");
+        System.out.println("Unesite cijenu izrade " + (i) + ". artikla:");
         BigDecimal cijenaIzrade = scanBigDecimal();
-        System.out.println("Unesite prodajnu cijenu " + (i + 1) + ". artikla:");
+        System.out.println("Unesite prodajnu cijenu " + (i) + ". artikla:");
         BigDecimal prodajnaCijena = scanBigDecimal();
         System.out.println("Unesite popust pri prodaji ako nema popusta unesite 0:");
         BigDecimal discount = scanBigDecimal(BigDecimal.valueOf(0), BigDecimal.valueOf(100));
@@ -229,6 +238,7 @@ public class Main {
                     .height(visina)
                     .length(duzina)
                     .productionCost(cijenaIzrade)
+                    .sellingPrice(prodajnaCijena)
                     .build();
         }
     }
@@ -262,9 +272,6 @@ public class Main {
                 .setWarrantyMonths(garancija)
                 .build();
     }
-    //napisati metodu za hranu sa najvise kalorija te hranu koja je najskuplja
-
-
 
 
     private static Category[] setCategories() {

@@ -3,45 +3,6 @@ package hr.java.production.model;
 
 public class Address {
     private String street, houseNumber, city, postalCode;
-/*
-    public Address(String street, String houseNumber, String city, String postalCode) {
-        this.street = street;
-        this.houseNumber = houseNumber;
-        this.city = city;
-        this.postalCode = postalCode;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getHouseNumber() {
-        return houseNumber;
-    }
-
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }*/
 public static class AddressBuilder {
     private String street;
     private String houseNumber;
@@ -69,7 +30,12 @@ public static class AddressBuilder {
     }
 
     public Address createAddress() {
-        return new Address();
+        Address address = new Address();
+        address.city = this.city;
+        address.houseNumber = this.houseNumber;
+        address.postalCode = this.postalCode;
+        address.street = this.street;
+        return address;
     }
 }
 }
