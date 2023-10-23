@@ -8,7 +8,7 @@ public class Item extends NamedEntity {
     protected Category category;
     protected BigDecimal width, height, length, productionCost, sellingPrice;
     protected Discount discount;
-    protected Laptop laptop;
+
 
     protected Item(Builder builder) {
         super(builder.name);
@@ -19,7 +19,6 @@ public class Item extends NamedEntity {
         this.productionCost = builder.productionCost;
         this.sellingPrice = builder.sellingPrice;
         this.discount = builder.discount;
-        this.laptop = builder.laptop;
     }
 
     public static class Builder {
@@ -27,7 +26,7 @@ public class Item extends NamedEntity {
         private Category category;
         private BigDecimal width, height, length, productionCost, sellingPrice;
         private Discount discount;
-        private Laptop laptop;
+
 
         public Builder(String name) {
             this.name = name;
@@ -62,16 +61,12 @@ public class Item extends NamedEntity {
             this.sellingPrice = sellingPrice;
             return this;
         }
-
-        public Builder discount(Discount discount) {
+        public Builder discount(Discount discount){
             this.discount = discount;
             return this;
         }
 
-        public Builder laptop(Laptop laptop) {
-            this.laptop = laptop;
-            return this;
-        }
+
 
         public Item build() {
             return new Item(this);
@@ -102,9 +97,5 @@ public class Item extends NamedEntity {
         return sellingPrice;
     }
 
-    public Discount getDiscount() {
-        return discount;
-    }
-
-    public Laptop getLaptop() {return laptop;}
+    public Discount getDiscount() {return discount;}
 }

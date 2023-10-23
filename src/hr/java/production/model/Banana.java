@@ -15,7 +15,7 @@ public class Banana extends Item implements Edible {
     }
 
     @Override
-    public int calculateKilocalories(BigDecimal weightKG) {
+    public int calculateKilocalories() {
         BigDecimal totalCalories = weightKG.multiply(new BigDecimal(caloriesPerKG));
         return totalCalories.intValue();
     }
