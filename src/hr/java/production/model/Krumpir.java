@@ -18,22 +18,32 @@ public class Krumpir extends Item implements Edible {
         BigDecimal totalCalories = weightKG.multiply(new BigDecimal(caloriesPerKG));
         return totalCalories.intValue();
     }
-
-    @Override
-    public BigDecimal calculatePrice(BigDecimal weight) {
-        return null;
+    protected Krumpir(Item.Builder builder) {
+        super(builder);
     }
 
-    public Krumpir(Builder builder, BigDecimal weightKG) {
-        super(builder);
-        this.weightKG = weightKG;
+    public static class KrumpirBuilder {
+        private Item.Builder builder;
+        private BigDecimal weightKG;
+
+        public KrumpirBuilder setBuilder(Item.Builder builder) {
+            this.builder = builder;
+            return this;
+        }
+
+        public KrumpirBuilder setWeightKG(BigDecimal weightKG) {
+            this.weightKG = weightKG;
+            return this;
+        }
+
+        public Krumpir createKrumpir() {
+            return new Krumpir(builder);
+        }
     }
 
     public BigDecimal getWeightKG() {
         return weightKG;
     }
 
-    public void setWeightKG(BigDecimal weightKG) {
-        this.weightKG = weightKG;
-    }
+
 }

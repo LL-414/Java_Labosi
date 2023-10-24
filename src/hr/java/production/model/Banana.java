@@ -9,6 +9,10 @@ public class Banana extends Item implements Edible {
     private static final int caloriesPerKG = 105;
     private BigDecimal weightKG;
 
+    protected Banana(Item.Builder builder) {
+        super(builder);
+    }
+
     @Override
     public boolean isEdible() {
         return true;
@@ -19,23 +23,29 @@ public class Banana extends Item implements Edible {
         BigDecimal totalCalories = weightKG.multiply(new BigDecimal(caloriesPerKG));
         return totalCalories.intValue();
     }
+    public static class BananaBuilder {
+        private Item.Builder builder;
+        private BigDecimal weightKG;
 
-    @Override
-    public BigDecimal calculatePrice(BigDecimal weight) {
-        return null;
-    }
+        public BananaBuilder setBuilder(Item.Builder builder) {
+            this.builder = builder;
+            return this;
+        }
 
-    public Banana(Item.Builder builder, BigDecimal weight) {
-        super(builder);
-        this.weightKG = weight;
+        public BananaBuilder setWeightKG(BigDecimal weightKG) {
+            this.weightKG = weightKG;
+            return this;
+        }
+
+        public Banana createBanana() {
+            return new Banana(builder);
+        }
     }
 
     public BigDecimal getWeight() {
         return weightKG;
     }
 
-    public void setWeight(BigDecimal weight) {
-        this.weightKG = weight;
-    }
+
 
 }

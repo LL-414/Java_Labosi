@@ -7,5 +7,4 @@ public interface Edible {
 
     int calculateKilocalories();
 
-    public BigDecimal calculatePrice(BigDecimal weight);
 }

@@ -248,9 +248,9 @@ public class Main {
         System.out.println("Unesite cijenu krumpira po kili sa decoimalom:");
         BigDecimal cijenaKrumpira = scanBigDecimal();
         System.out.println("Cijena Krumpira je :" + (cijenaKrumpira.multiply(kilaHrane)));
-        return  new Krumpir(new Item.Builder(vrstaKrumpira)
-                .sellingPrice(cijenaKrumpira)
-                ,kilaHrane);
+        return new Krumpir.KrumpirBuilder().setBuilder(new Item.Builder(vrstaKrumpira)
+                .sellingPrice(cijenaKrumpira)).setWeightKG(kilaHrane).createKrumpir();
+
     }
     public static Banana setBanana(BigDecimal kilaHrane){
         System.out.println("Unesite vrstu banane:");
@@ -258,9 +258,11 @@ public class Main {
         System.out.println("Unesite cijenu banane po kili sa decoimalom:");
         BigDecimal cijenaBanane = scanBigDecimal();
         System.out.println("Cijena banane je :" + (cijenaBanane.multiply(kilaHrane)));
-        return new Banana(new Item.Builder(vrstaBanane)
-                .sellingPrice(cijenaBanane)
-                ,kilaHrane);
+
+        return new Banana.BananaBuilder().setBuilder(new Item.Builder(vrstaBanane)
+                .sellingPrice(cijenaBanane))
+                .setWeightKG(kilaHrane)
+                .createBanana();
     }
     public static Laptop setLaptop(){
         System.out.print("Molimo unesite garanciju za laptop u trajanju mjeseca:");
@@ -276,14 +278,23 @@ public class Main {
 
     private static Category[] setCategories() {
         Category[] categories = new Category[NUM_CATEGORIES+2];
-        categories[0] = new Category("Food","Is edible");
-        categories[1] = new Category("Laptop","Various laptops");
+        //categories[0] = new CategoryBuilder().setName("Food").setDescription("Is edible").createCategory();
+       // categories[1] = new CategoryBuilder().setName("Laptop").setDescription("Various laptops").createCategory();
+        categories[0] = new Category.CategoryBuilder("Edibles")
+                .setDescription("Is eatable")
+                .build();
+        categories[1] = new Category.CategoryBuilder("Technical")
+                .setDescription("Laptops")
+                .build();
         for (int i = 2; i < NUM_CATEGORIES+2; i++) {
             System.out.println("Upisite ime " + (i - 1) + ". kategorije.");
             String name = scanner.nextLine();
             System.out.println("Unesite opis " + (i - 1) + ". kategorije");
             String description = scanner.nextLine();
-            categories[i] = new Category(name, description);
+           // categories[i] = new CategoryBuilder().setName(name).setDescription(description).createCategory();
+            categories[i] = new Category.CategoryBuilder(name)
+                    .setDescription(description)
+                    .build();
         }
         return categories;
     }
@@ -359,7 +370,12 @@ public class Main {
                     itemsCopy = removeItem(itemsCopy, choice);
                 }
             }
-            factories[i] = new Factory(name, finalItems, address);
+            //factories[i] = new FactoryBuilder().setName(name).setItems(finalItems).setAddress(address).createFactory();
+            factories[i] = new Factory.FactoryBuilder()
+                    .setName(name)
+                    .setItems(finalItems)
+                    .setAddress(address)
+                    .createFactory();
 
         }
         return factories;

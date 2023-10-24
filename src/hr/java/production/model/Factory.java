@@ -9,11 +9,43 @@ public class Factory extends NamedEntity {
     private Item[] items;
     private Address address;
 
-    public Factory(String name, Item[] items, Address address) {
-        super(name);
-        this.items = items;
-        this.address = address;
+    public Factory() {
+        super(null);
     }
+
+    public static class FactoryBuilder {
+        private String name;
+        private Item[] items;
+        private Address address;
+
+        public FactoryBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public FactoryBuilder setItems(Item[] items) {
+            this.items = items;
+            return this;
+        }
+
+        public FactoryBuilder setAddress(Address address) {
+            this.address = address;
+            return this;
+        }
+
+        public Factory createFactory() {
+            Factory factory = new Factory();
+            this.address = factory.address;
+            this.name = factory.name;
+            this.items = factory.items;
+            return factory;
+
+        }
+    }
+
+
+
+
 
     public String getName() {
         return name;
@@ -39,12 +71,5 @@ public class Factory extends NamedEntity {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "Factory{" +
-                "name='" + name + '\'' +
-                ", items=" + Arrays.toString(items) +
-                ", address=" + address +
-                '}';
-    }
+
 }
