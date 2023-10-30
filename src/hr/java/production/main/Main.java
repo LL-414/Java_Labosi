@@ -1,10 +1,13 @@
 package hr.java.production.main;
 
+import hr.java.production.exception.Duplicate_Item;
 import hr.java.production.model.*;
 
 
 import java.math.BigDecimal;
+import java.security.PublicKey;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -47,17 +50,15 @@ public class Main {
         Integer choice;
         while (true) {
 
-            if (scanner.hasNextInt()) {
+            try {
                 choice = scanner.nextInt();
                 scanner.nextLine();
                 if (choice >= min && choice <= max) {
                     break;
                 } else {
-                    System.out.println("Krivi unos molimo ponovite!");
-                    scanner.nextLine();
+                    System.out.println("Krivi unos. Unesite broj između " + min + " i " + max + ".");
                 }
-
-            } else {
+            } catch (InputMismatchException ex) {
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -65,14 +66,15 @@ public class Main {
         return choice;
     }
 
+
     public static BigDecimal scanBigDecimal() {
         BigDecimal inputBigDecimal;
         while (true) {
-            if (scanner.hasNextBigDecimal()) {
+            try {
                 inputBigDecimal = scanner.nextBigDecimal();
                 scanner.nextLine();
                 break;
-            } else {
+            }catch (InputMismatchException ex){
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -83,18 +85,15 @@ public class Main {
     public static BigDecimal scanBigDecimal(BigDecimal minBigDecimal, BigDecimal maxBigDecimal) {
         BigDecimal inputBigDecimal;
         while (true) {
-
-            if (scanner.hasNextInt()) {
-                inputBigDecimal = scanner.nextBigDecimal();
+            try{
+               inputBigDecimal = scanner.nextBigDecimal();
                 scanner.nextLine();
                 if (inputBigDecimal.compareTo(minBigDecimal) >= 0 && inputBigDecimal.compareTo(maxBigDecimal) <= 0) {
                     break;
                 } else {
-                    System.out.println("Krivi unos molimo ponovite!");
-                    scanner.nextLine();
+                    System.out.println("Krivi unos. Unesite broj između " + minBigDecimal + " i " + maxBigDecimal + ".");
                 }
-
-            } else {
+            }catch (InputMismatchException ex){
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -111,37 +110,39 @@ public class Main {
 
         for (Item item : items) {
             if (item instanceof Edible) {
-            if( ((Edible) item).calculateKilocalories()>maxCalories){
-                mostCaloricFood = item;
-                maxCalories = ((Edible) item).calculateKilocalories();
-            }
+                if (((Edible) item).calculateKilocalories() > maxCalories) {
+                    mostCaloricFood = item;
+                    maxCalories = ((Edible) item).calculateKilocalories();
+                }
             }
         }
-        if(mostCaloricFood == null){
+        if (mostCaloricFood == null) {
             return "Nema laptopa";
-        }else{
-            return mostCaloricFood.getName()+" mjeseci garancije:"+ maxCalories;
+        } else {
+            return mostCaloricFood.getName() + " mjeseci garancije:" + maxCalories;
         }
     }
+
     public static String findLaptopWithLeasWarranty(Item[] items) {
         int biggestWarranty = 0;
         Item laptopWithBestWarranty = null;
 
         for (Item item : items) {
             if (item instanceof Technical) {
-                if( ((Technical) item).warranty()>biggestWarranty){
+                if (((Technical) item).warranty() > biggestWarranty) {
                     laptopWithBestWarranty = item;
                     biggestWarranty = ((Technical) item).warranty();
                 }
             }
         }
-       if(laptopWithBestWarranty == null){
-        return "Nema laptopa";
-       }else{
-           return laptopWithBestWarranty.getName()+" mjeseci garancije:"+ biggestWarranty;
-       }
+        if (laptopWithBestWarranty == null) {
+            return "Nema laptopa";
+        } else {
+            return laptopWithBestWarranty.getName() + " mjeseci garancije:" + biggestWarranty;
+        }
     }
-    public static Item findLaptopWithSmallestWarranty(Item[] items){
+
+    public static Item findLaptopWithSmallestWarranty(Item[] items) {
 
         Item laptop = null;
 
@@ -153,6 +154,7 @@ public class Main {
 
         return laptop;
     }
+
     private static String biggestVolume(Factory[] factories) {
         String biggestFactory = null;
         BigDecimal biggestVolume = BigDecimal.ZERO;
@@ -205,7 +207,7 @@ public class Main {
 
     //____________________________________________________________________________________________________________
 
-    public static Item setArticles(int i,Category[] categories,int izbor){
+    public static Item setArticles(int i, Category[] categories, int izbor) {
         System.out.println("Unesite ime " + (i) + ". artikla:");
         String name = scanner.nextLine();
         System.out.println("Unesite sirinu " + (i) + ". artikla:");
@@ -230,29 +232,34 @@ public class Main {
                     .length(duzina)
                     .productionCost(cijenaIzrade)
                     .sellingPrice(discountedPrice)
+                    .index(i)
                     .build();
-        }else {
+        } else {
             return new Item.Builder(name)
-                    .category(categories[izbor])
+                    .category(categories[izbor-1])
                     .width(sirina)
                     .height(visina)
                     .length(duzina)
                     .productionCost(cijenaIzrade)
                     .sellingPrice(prodajnaCijena)
+                    .index(i)
                     .build();
         }
     }
-    public static Krumpir setKrumpir(BigDecimal kilaHrane){
+
+    public static Krumpir setKrumpir(BigDecimal kilaHrane, int i) {
         System.out.println("Unesite vrstu krumpira:");
         String vrstaKrumpira = scanner.nextLine();
         System.out.println("Unesite cijenu krumpira po kili sa decoimalom:");
         BigDecimal cijenaKrumpira = scanBigDecimal();
         System.out.println("Cijena Krumpira je :" + (cijenaKrumpira.multiply(kilaHrane)));
-        return  new Krumpir(new Item.Builder(vrstaKrumpira)
+        return new Krumpir(new Item.Builder(vrstaKrumpira)
                 .sellingPrice(cijenaKrumpira)
-                ,kilaHrane);
+                .index(i)
+                , kilaHrane);
     }
-    public static Banana setBanana(BigDecimal kilaHrane){
+
+    public static Banana setBanana(BigDecimal kilaHrane,int i) {
         System.out.println("Unesite vrstu banane:");
         String vrstaBanane = scanner.nextLine();
         System.out.println("Unesite cijenu banane po kili sa decoimalom:");
@@ -260,25 +267,27 @@ public class Main {
         System.out.println("Cijena banane je :" + (cijenaBanane.multiply(kilaHrane)));
         return new Banana(new Item.Builder(vrstaBanane)
                 .sellingPrice(cijenaBanane)
-                ,kilaHrane);
+                .index(i)
+                , kilaHrane);
     }
-    public static Laptop setLaptop(){
+
+    public static Laptop setLaptop(int i) {
         System.out.print("Molimo unesite garanciju za laptop u trajanju mjeseca:");
-        int garancija = scanInt(1,60);
+        int garancija = scanInt(1, 60);
         System.out.println("Unesite ime laptopa:");
         String name = scanner.nextLine();
         return new Laptop.LaptopBuilder()
-                .setBuilder(new Item.Builder(name).sellingPrice(BigDecimal.valueOf(600)))
+                .setBuilder(new Item.Builder(name).sellingPrice(BigDecimal.valueOf(600)).index(i))
                 .setWarrantyMonths(garancija)
                 .build();
     }
 
 
     private static Category[] setCategories() {
-        Category[] categories = new Category[NUM_CATEGORIES+2];
-        categories[0] = new Category("Food","Is edible");
-        categories[1] = new Category("Laptop","Various laptops");
-        for (int i = 2; i < NUM_CATEGORIES+2; i++) {
+        Category[] categories = new Category[NUM_CATEGORIES + 2];
+        categories[0] = new Category("Food", "Is edible");
+        categories[1] = new Category("Laptop", "Various laptops");
+        for (int i = 2; i < NUM_CATEGORIES + 2; i++) {
             System.out.println("Upisite ime " + (i - 1) + ". kategorije.");
             String name = scanner.nextLine();
             System.out.println("Unesite opis " + (i - 1) + ". kategorije");
@@ -291,38 +300,43 @@ public class Main {
     private static Item[] setItems(Category[] categories) {
         Item[] items = new Item[NUM_ITEMS];
         for (int i = 0; i < NUM_ITEMS; i++) {
-        System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
-        for (int j = 0; j < NUM_CATEGORIES+2; j++) {
-            System.out.println("|" + (j + 1) + "| " + categories[j].getName());
-        }
-        Integer izbor;
-        izbor = scanInt(0, categories.length);
+            System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
+            for (int j = 0; j < NUM_CATEGORIES + 2; j++) {
+                System.out.println("|" + (j + 1) + "| " + categories[j].getName());
+            }
+            Integer izbor;
+            izbor = scanInt(0, categories.length);
             if (izbor == 1) {
                 System.out.println("Zelite li unesti KG |1|banane ili |2|krumpira?");
                 int izborHrane = scanInt(1, 2);
                 System.out.print("Molimo upisite kolicinu hrane u KG sa decimalom:");
                 BigDecimal kilaHrane = scanBigDecimal();
                 if (izborHrane == 1) {
-                   items[i] = setBanana(kilaHrane);
+                    items[i] = setBanana(kilaHrane,i);
                 } else {
-                    items[i] = setKrumpir(kilaHrane);
+                    items[i] = setKrumpir(kilaHrane,i);
 
                 }
-            }else if(izbor==2){
-                items[i] = setLaptop();
+            } else if (izbor == 2) {
+                items[i] = setLaptop(i);
             } else {
-                items[i] = setArticles(i,categories,izbor);
-                }
+                items[i] = setArticles(i, categories, izbor);
             }
+        }
 
         return items;
     }
+//_________________________________________________________________________________
+
+
 
     private static Factory[] setFactories(Item[] items) {
         Factory[] factories = new Factory[NUM_FACTORIES];
-        Item[] itemsCopy = Arrays.copyOf(items, items.length);
-
+        Integer[] index = new Integer[NUM_ITEMS];
+        Integer itemCoutner = 0;
+        //Item[] itemsCopy = Arrays.copyOf(items, items.length);
         for (int i = 0; i < NUM_FACTORIES; i++) {
+            Item[] finalItems = new Item[0];
             System.out.println("Unesite ime " + (i + 1) + ". tvornice:");
             String name = scanner.nextLine();
             System.out.println("Napisite ime ulice u kojoj se nalazi tvornica:");
@@ -333,32 +347,52 @@ public class Main {
             String grad = scanner.nextLine();
             System.out.println("Napisite postanski broj u kojoj se nalazi tvornica:");
             String postanskiBroj = scanner.nextLine();
-           Address address = new Address.AddressBuilder()
-                   .setPostalCode(postanskiBroj)
-                   .setCity(grad)
-                   .setStreet(ulica)
-                   .setHouseNumber(kucniBroj)
-                   .createAddress();
+            Address address = new Address.AddressBuilder()
+                    .setPostalCode(postanskiBroj)
+                    .setCity(grad)
+                    .setStreet(ulica)
+                    .setHouseNumber(kucniBroj)
+                    .createAddress();
 
 
-            Item[] finalItems = new Item[0];
-            boolean end = false;
-            while (end != true) {
-                System.out.println("Izaberite artikle:");
-                for (int j = 0; j < itemsCopy.length; j++) {
-                    System.out.println("|" + (j) + "| " + items[j].getName());
+
+                while (true) {
+                    try{
+                    System.out.println("Izaberite artikle:");
+                    for (int j = 0; j < items.length; j++) {
+                        System.out.println("|" + (j) + "| " + items[j].getName());
+                    }
+                    System.out.println("|" + items.length + "| Zavrsetak izbora");
+                    int choice = scanInt(0, items.length);
+
+
+
+                    if(i!=0){
+                        if (choice == items.length) {break;
+                        }else {
+                            for (int h=0;h==itemCoutner;h++) {
+                                if(choice==index[h]){
+                                    throw new Duplicate_Item("Artiikl vec postoji");
+                                }
+                            }
+                            finalItems = addItem(items, items[choice]);
+                            index[itemCoutner] = items[choice].getIndex();
+                            itemCoutner++;
+                        }
+                    }else{
+                        finalItems = addItem(items, items[choice]);
+                        index[itemCoutner] = items[choice].getIndex();
+                        itemCoutner++;
+                        }  
+                    } catch (Duplicate_Item ex){
+                        System.out.println(ex.getMessage());
+                    }
+
+
+
                 }
-                System.out.println("|" + itemsCopy.length + "| Zavrsetak izbora");
 
 
-                int choice = scanInt(0, itemsCopy.length);
-                if (choice == itemsCopy.length) {
-                    end = true;
-                } else {
-                    finalItems = addItem(itemsCopy, itemsCopy[choice]);
-                    itemsCopy = removeItem(itemsCopy, choice);
-                }
-            }
             factories[i] = new Factory(name, finalItems, address);
 
         }
@@ -403,10 +437,10 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Category[] categories = setCategories();
+         Category[] categories = setCategories();
         Item[] items = setItems(categories);
-        findMostCaloricFood(items);
-        //Factory[] factories = setFactories(items);
+        //findMostCaloricFood(items);
+        Factory[] factories = setFactories(items);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
