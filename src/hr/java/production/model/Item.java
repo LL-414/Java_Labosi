@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 public class Item extends NamedEntity {
     protected Integer index;
+    protected String color;
     protected Category category;
     protected BigDecimal width, height, length, productionCost, sellingPrice;
     protected Discount discount;
@@ -21,9 +22,11 @@ public class Item extends NamedEntity {
         this.sellingPrice = builder.sellingPrice;
         this.discount = builder.discount;
         this.index = builder.index;
+        this.color = builder.color;
     }
 
     public static class Builder {
+        private String color;
         private String name;
         private Integer index;
         private Category category;
@@ -69,6 +72,10 @@ public class Item extends NamedEntity {
             this.sellingPrice = sellingPrice;
             return this;
         }
+        public Builder color(String color){
+            this.color= color;
+            return this;
+        }
 
         public Builder discount(Discount discount) {
             this.discount = discount;
@@ -95,6 +102,10 @@ public class Item extends NamedEntity {
 
     public BigDecimal getLength() {
         return length;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public Integer getIndex() {

@@ -1,6 +1,7 @@
 package hr.java.production.main;
-
+import hr.java.production.exception.BojaNePostojiException;
 import hr.java.production.exception.Duplicate_Item;
+import hr.java.production.main.Edible;
 import hr.java.production.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +56,21 @@ public class Main {
      * @param item The item to be added.
      * @return The updated array of items with the added item.
      */
-    private static Item[] addItem(Item[] arr, Item item) {
+    public static Item[] addItem(Item[] arr, Item item) {
         Item[] tmp = new Item[arr.length + 1];
         tmp[arr.length] = item;
         return tmp;
+    }
+    public static Item[] setColors(){
+        System.out.println("Koliko boja zelite?");
+        int brojBoja = scanInt(1,100);
+        Item[] boje = new Item[brojBoja];
+        for (int i = 0; i < brojBoja; i++) {
+            System.out.println("Unesite "+(i+1)+". boju.");
+            String trenutnaBoja=scanner.nextLine();
+            boje[i] = new Item.Builder("Boja").color(trenutnaBoja).build();
+        }
+        return boje;
     }
 
 
@@ -234,7 +246,7 @@ public class Main {
 
     //____________________________________________________________________________________________________________
 
-    public static Item setArticles(int i, Category[] categories, int izbor) {
+    public static Item setArticles(int i, Category[] categories, int izbor,Item[] boje) {
         System.out.println("Unesite ime " + (i) + ". artikla:");
         String name = scanner.nextLine();
         System.out.println("Unesite sirinu " + (i) + ". artikla:");
@@ -249,6 +261,8 @@ public class Main {
         BigDecimal prodajnaCijena = scanBigDecimal();
         System.out.println("Unesite popust pri prodaji ako nema popusta unesite 0:");
         BigDecimal discount = scanBigDecimal(BigDecimal.valueOf(0), BigDecimal.valueOf(100));
+        String boja = checkColor(boje);
+
 
         if (discount.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal discountedPrice = prodajnaCijena.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(100))));
@@ -260,6 +274,7 @@ public class Main {
                     .productionCost(cijenaIzrade)
                     .sellingPrice(discountedPrice)
                     .index(i)
+                    .color(boja)
                     .build();
         } else {
             return new Item.Builder(name)
@@ -270,8 +285,47 @@ public class Main {
                     .productionCost(cijenaIzrade)
                     .sellingPrice(prodajnaCijena)
                     .index(i)
+                    .color(boja)
                     .build();
         }
+    }
+
+
+    /**
+     * Checks if the color exists.
+     *
+     * @param boje The array of items to choose from.
+     * @return Color what user choose.
+     */
+    private static String checkColor(Item[] boje) {
+
+       String boja;
+        while (true) {
+            try {
+            System.out.println("Unesite boju artikla");
+            boja = scanner.nextLine();
+            provjeraJednakostiBoja(boja,boje);
+            break;
+            }catch (BojaNePostojiException ex){
+                System.out.println(ex.getMessage());
+                logger.error("Color does not exist");
+            }
+        }
+        return boja;
+    }
+
+    private static void provjeraJednakostiBoja(String i, Item[] boje) throws BojaNePostojiException {
+        boolean boja = false;
+        for (Item k:boje
+        ) {
+            if (k.getColor().equals(i)) {
+                boja = true;
+                break;
+            }
+        }
+        if(boja== false){
+            throw new BojaNePostojiException("Ova boja ne postoji");
+    }
     }
 
     public static Krumpir setKrumpir(BigDecimal kilaHrane, int i) {
@@ -328,7 +382,7 @@ public class Main {
         return categories;
     }
 
-    private static Item[] setItems(Category[] categories) {
+    private static Item[] setItems(Category[] categories,Item[] boje) {
         Item[] items = new Item[NUM_ITEMS];
         for (int i = 0; i < NUM_ITEMS; i++) {
             System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
@@ -351,7 +405,7 @@ public class Main {
             } else if (izbor == 2) {
                 items[i] = setLaptop(i);
             } else {
-                items[i] = setArticles(i, categories, izbor);
+                items[i] = setArticles(i, categories, izbor,boje);
             }
         }
 
@@ -482,10 +536,11 @@ public class Main {
      */
     public static void main(String[] args) {
         logger.info("Start app");
+        Item[] boje = setColors();
         Category[] categories = setCategories();
-        Item[] items = setItems(categories);
+        Item[] items = setItems(categories,boje );
         //findMostCaloricFood(items);
-        Factory[] factories = setFactories(items);
+        //Factory[] factories = setFactories(items);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));

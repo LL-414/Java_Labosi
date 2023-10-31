@@ -1,1 +1,10 @@
 2023-10-31 14:31:22,908 INFO [main] h.j.p.m.Main [Main.java:440] Start app
+2023-10-31 17:16:30,735 INFO [main] h.j.p.m.Main [Main.java:534] Start app
+2023-10-31 17:16:58,014 ERROR [main] h.j.p.m.Main [Main.java:311] Color does not exist
+2023-10-31 17:17:01,902 ERROR [main] h.j.p.m.Main [Main.java:311] Color does not exist
+2023-10-31 17:17:28,424 INFO [main] h.j.p.m.Main [Main.java:534] Start app
+2023-10-31 17:17:47,101 ERROR [main] h.j.p.m.Main [Main.java:311] Color does not exist
+2023-10-31 17:18:14,862 INFO [main] h.j.p.m.Main [Main.java:534] Start app
+2023-10-31 17:19:36,412 ERROR [main] h.j.p.m.Main [Main.java:311] Color does not exist
+2023-10-31 17:21:25,693 INFO [main] h.j.p.m.Main [Main.java:538] Start app
+2023-10-31 17:21:43,643 ERROR [main] h.j.p.m.Main [Main.java:311] Color does not exist
