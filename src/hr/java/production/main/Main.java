@@ -2,6 +2,8 @@ package hr.java.production.main;
 
 import hr.java.production.exception.Duplicate_Item;
 import hr.java.production.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.math.BigDecimal;
@@ -12,14 +14,14 @@ import java.util.Scanner;
 
 
 public class Main {
-
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final Integer NUM_CATEGORIES = 3;
     private static final Integer NUM_ITEMS = 5;
     private static final Integer NUM_FACTORIES = 2;
     private static final Integer NUM_STORES = 2;
     static Scanner scanner = new Scanner(System.in);
 
-    //____________________________________________________________________________________________________________
+
     public static Item[] removeItem(Item[] items, int choice) {
         if (items == null || choice < 0 || choice >= items.length) {
             return items;
@@ -51,7 +53,7 @@ public class Main {
         while (true) {
 
             try {
-                choice = scanner.nextInt();
+               choice = scanner.nextInt();
                 scanner.nextLine();
                 if (choice >= min && choice <= max) {
                     break;
@@ -59,6 +61,7 @@ public class Main {
                     System.out.println("Krivi unos. Unesite broj između " + min + " i " + max + ".");
                 }
             } catch (InputMismatchException ex) {
+                logger.warn(ex.getMessage());
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -366,11 +369,9 @@ public class Main {
                     int choice = scanInt(0, items.length);
 
 
-
+                    if (choice == items.length) {break;}
                     if(i!=0){
-                        if (choice == items.length) {break;
-                        }else {
-                            for (int h=0;h==itemCoutner;h++) {
+                        for (int h=0;h==itemCoutner;h++) {
                                 if(choice==index[h]){
                                     throw new Duplicate_Item("Artiikl vec postoji");
                                 }
@@ -378,9 +379,9 @@ public class Main {
                             finalItems = addItem(items, items[choice]);
                             index[itemCoutner] = items[choice].getIndex();
                             itemCoutner++;
-                        }
+
                     }else{
-                        finalItems = addItem(items, items[choice]);
+                        finalItems = addItem(finalItems, items[choice]);
                         index[itemCoutner] = items[choice].getIndex();
                         itemCoutner++;
                         }  
@@ -437,13 +438,14 @@ public class Main {
 
 
     public static void main(String[] args) {
-         Category[] categories = setCategories();
+        logger.info("Start app");
+        Category[] categories = setCategories();
         Item[] items = setItems(categories);
         //findMostCaloricFood(items);
         Factory[] factories = setFactories(items);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
-
+        logger.info("Aplikacija zavrsila");
     }
 }
