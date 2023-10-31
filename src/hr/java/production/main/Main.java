@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
+/**
+ * The main class of the application, responsible for handling user input and managing the workflow.
+ */
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final Integer NUM_CATEGORIES = 3;
@@ -21,7 +23,13 @@ public class Main {
     private static final Integer NUM_STORES = 2;
     static Scanner scanner = new Scanner(System.in);
 
-
+    /**
+     * Removes an item from the array based on the user's choice.
+     *
+     * @param items  The array of items.
+     * @param choice The user's choice of item to remove.
+     * @return The updated array of items without the chosen item.
+     */
     public static Item[] removeItem(Item[] items, int choice) {
         if (items == null || choice < 0 || choice >= items.length) {
             return items;
@@ -40,7 +48,13 @@ public class Main {
         return itemsCopy;
     }
 
-
+    /**
+     * Adds an item to the array.
+     *
+     * @param arr  The array of items.
+     * @param item The item to be added.
+     * @return The updated array of items with the added item.
+     */
     private static Item[] addItem(Item[] arr, Item item) {
         Item[] tmp = new Item[arr.length + 1];
         tmp[arr.length] = item;
@@ -106,7 +120,12 @@ public class Main {
 
     //____________________________________________________________________________________________________________
 
-
+    /**
+     * Finds the most caloric food item from the given array of items.
+     *
+     * @param items The array of items to search through.
+     * @return A string representing the most caloric food item.
+     */
     public static String findMostCaloricFood(Item[] items) {
         int maxCalories = 0;
         Item mostCaloricFood = null;
@@ -125,7 +144,12 @@ public class Main {
             return mostCaloricFood.getName() + " mjeseci garancije:" + maxCalories;
         }
     }
-
+    /**
+     * Finds the laptop with the least warranty from the given array of items.
+     *
+     * @param items The array of items to search through.
+     * @return The laptop with the least warranty.
+     */
     public static String findLaptopWithLeasWarranty(Item[] items) {
         int biggestWarranty = 0;
         Item laptopWithBestWarranty = null;
@@ -285,7 +309,11 @@ public class Main {
                 .build();
     }
 
-
+    /**
+     * Sets the categories based on user input.
+     *
+     * @return An array of created categories.
+     */
     private static Category[] setCategories() {
         Category[] categories = new Category[NUM_CATEGORIES + 2];
         categories[0] = new Category("Food", "Is edible");
@@ -332,7 +360,12 @@ public class Main {
 //_________________________________________________________________________________
 
 
-
+    /**
+     * Sets the factories based on user input.
+     *
+     * @param items The array of items to choose from.
+     * @return An array of created factories.
+     */
     private static Factory[] setFactories(Item[] items) {
         Factory[] factories = new Factory[NUM_FACTORIES];
         Integer[] index = new Integer[NUM_ITEMS];
@@ -399,7 +432,12 @@ public class Main {
         }
         return factories;
     }
-
+    /**
+     * Sets the stores based on user input.
+     *
+     * @param items The array of items to choose from.
+     * @return An array of created stores.
+     */
     private static Store[] setStores(Item[] items) {
         Store[] stores = new Store[NUM_STORES];
         Item[] itemsCopy = Arrays.copyOf(items, items.length);
@@ -436,7 +474,12 @@ public class Main {
         return stores;
     }
 
-
+    /**
+     * The main method of the application, responsible for starting the application,
+     * creating categories, items, factories, stores, and logging the start and end of the application.
+     *
+     * @param args The command-line arguments (not used in this application).
+     */
     public static void main(String[] args) {
         logger.info("Start app");
         Category[] categories = setCategories();
