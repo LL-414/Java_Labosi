@@ -1,13 +1,15 @@
 package hr.java.production.model;
 
 
-public class Address {
-    private String street, houseNumber, city, postalCode;
+import hr.java.production.enumerator.Gradovi;
+
+public class Address  {
+    private String street, houseNumber;
+    Gradovi gradovi;
 public static class AddressBuilder {
+    Gradovi gradovi;
     private String street;
     private String houseNumber;
-    private String city;
-    private String postalCode;
 
     public AddressBuilder setStreet(String street) {
         this.street = street;
@@ -19,23 +21,30 @@ public static class AddressBuilder {
         return this;
     }
 
-    public AddressBuilder setCity(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public AddressBuilder setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public AddressBuilder setGradovi(Gradovi gradovi){
+        this.gradovi = gradovi;
         return this;
     }
 
     public Address createAddress() {
         Address address = new Address();
-        address.city = this.city;
         address.houseNumber = this.houseNumber;
-        address.postalCode = this.postalCode;
         address.street = this.street;
+        address.gradovi = this.gradovi;
         return address;
     }
 }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+
+
 }

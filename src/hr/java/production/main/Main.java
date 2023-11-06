@@ -1,14 +1,15 @@
 package hr.java.production.main;
 
+import hr.java.production.enumerator.Gradovi;
 import hr.java.production.exception.Duplicate_Item;
 import hr.java.production.model.*;
 
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.security.PublicKey;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
 
 public class Main {
@@ -39,9 +40,9 @@ public class Main {
     }
 
 
-    private static Item[] addItem(Item[] arr, Item item) {
-        Item[] tmp = new Item[arr.length + 1];
-        tmp[arr.length] = item;
+    private static Item[] addItem(List<Item> arr, Item item) {
+        Item[] tmp = new Item[arr.size() + 1];
+        tmp[arr.size()] = item;
         return tmp;
     }
 
@@ -74,7 +75,7 @@ public class Main {
                 inputBigDecimal = scanner.nextBigDecimal();
                 scanner.nextLine();
                 break;
-            }catch (InputMismatchException ex){
+            } catch (InputMismatchException ex) {
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -85,15 +86,15 @@ public class Main {
     public static BigDecimal scanBigDecimal(BigDecimal minBigDecimal, BigDecimal maxBigDecimal) {
         BigDecimal inputBigDecimal;
         while (true) {
-            try{
-               inputBigDecimal = scanner.nextBigDecimal();
+            try {
+                inputBigDecimal = scanner.nextBigDecimal();
                 scanner.nextLine();
                 if (inputBigDecimal.compareTo(minBigDecimal) >= 0 && inputBigDecimal.compareTo(maxBigDecimal) <= 0) {
                     break;
                 } else {
                     System.out.println("Krivi unos. Unesite broj između " + minBigDecimal + " i " + maxBigDecimal + ".");
                 }
-            }catch (InputMismatchException ex){
+            } catch (InputMismatchException ex) {
                 System.out.println("Krivi unos molimo ponovite!");
                 scanner.nextLine();
             }
@@ -162,10 +163,8 @@ public class Main {
         for (int i = 0; i < factories.length; i++) {
             BigDecimal factoryVolume = BigDecimal.ZERO;
 
-            for (int j = 0; j < factories[i].getItems().length; j++) {
-                Item tmpItem = factories[i].getItems()[j];
-
-                // Null check before accessing properties of tmpItem
+            for (int j = 0; j < factories[i].getItems().size(); j++) {
+                Item tmpItem = factories[i].getItems().iterator().next();
                 if (tmpItem != null) {
                     BigDecimal itemVolume = tmpItem.getWidth().multiply(tmpItem.getHeight()).multiply(tmpItem.getLength());
                     factoryVolume = factoryVolume.add(itemVolume);
@@ -236,7 +235,7 @@ public class Main {
                     .build();
         } else {
             return new Item.Builder(name)
-                    .category(categories[izbor-1])
+                    .category(categories[izbor - 1])
                     .width(sirina)
                     .height(visina)
                     .length(duzina)
@@ -259,7 +258,7 @@ public class Main {
                 , kilaHrane);
     }
 
-    public static Banana setBanana(BigDecimal kilaHrane,int i) {
+    public static Banana setBanana(BigDecimal kilaHrane, int i) {
         System.out.println("Unesite vrstu banane:");
         String vrstaBanane = scanner.nextLine();
         System.out.println("Unesite cijenu banane po kili sa decoimalom:");
@@ -297,8 +296,9 @@ public class Main {
         return categories;
     }
 
-    private static Item[] setItems(Category[] categories) {
+    private static List<Item> setItems(Category[] categories) {
         Item[] items = new Item[NUM_ITEMS];
+        List<Item> itemList = new ArrayList<>(NUM_ITEMS);
         for (int i = 0; i < NUM_ITEMS; i++) {
             System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
             for (int j = 0; j < NUM_CATEGORIES + 2; j++) {
@@ -312,94 +312,110 @@ public class Main {
                 System.out.print("Molimo upisite kolicinu hrane u KG sa decimalom:");
                 BigDecimal kilaHrane = scanBigDecimal();
                 if (izborHrane == 1) {
-                    items[i] = setBanana(kilaHrane,i);
+                    items[i] = setBanana(kilaHrane, i);
+                    itemList.add(setBanana(kilaHrane, i));
                 } else {
-                    items[i] = setKrumpir(kilaHrane,i);
-
+                    items[i] = setKrumpir(kilaHrane, i);
+                    itemList.add(setKrumpir(kilaHrane, i));
                 }
             } else if (izbor == 2) {
                 items[i] = setLaptop(i);
+                itemList.add(setLaptop(i));
             } else {
                 items[i] = setArticles(i, categories, izbor);
+                itemList.add(setArticles(i, categories, izbor));
             }
         }
 
-        return items;
+        return itemList;
     }
 //_________________________________________________________________________________
 
 
-
-    private static Factory[] setFactories(Item[] items) {
+    private static Factory[] setFactories(List<Item> items) {
         Factory[] factories = new Factory[NUM_FACTORIES];
         Integer[] index = new Integer[NUM_ITEMS];
         Integer itemCoutner = 0;
         //Item[] itemsCopy = Arrays.copyOf(items, items.length);
         for (int i = 0; i < NUM_FACTORIES; i++) {
             Item[] finalItems = new Item[0];
+            Set<Item> finalItemSet = new HashSet<>();
             System.out.println("Unesite ime " + (i + 1) + ". tvornice:");
             String name = scanner.nextLine();
             System.out.println("Napisite ime ulice u kojoj se nalazi tvornica:");
             String ulica = scanner.nextLine();
             System.out.println("Napisite kucni broj u kojoj se nalazi tvornica:");
             String kucniBroj = scanner.nextLine();
-            System.out.println("Napisite grad u kojoj se nalazi tvornica:");
-            String grad = scanner.nextLine();
+            System.out.println("Napisite grad u kojoj se nalazi tvornica");
+            System.out.println("1 Ivanic|2 Zagreb|3 Sesvete");
+            int grad = scanInt(1, 3);
+            Gradovi gradovi= Gradovi.IVANIC_GRAD;
+            switch (grad) {
+                case (1):
+                    break;
+                case (2):
+                    gradovi = Gradovi.ZAGREB;
+                    break;
+                case (3):
+                    gradovi = Gradovi.SESVETE;
+                    break;
+            }
             System.out.println("Napisite postanski broj u kojoj se nalazi tvornica:");
             String postanskiBroj = scanner.nextLine();
             Address address = new Address.AddressBuilder()
-                    .setPostalCode(postanskiBroj)
-                    .setCity(grad)
+                    .setGradovi(gradovi)
                     .setStreet(ulica)
                     .setHouseNumber(kucniBroj)
                     .createAddress();
 
 
-
-                while (true) {
-                    try{
+            while (true) {
+                try {
                     System.out.println("Izaberite artikle:");
-                    for (int j = 0; j < items.length; j++) {
-                        System.out.println("|" + (j) + "| " + items[j].getName());
+                    for (int j = 0; j < (int) items.size(); j++) {
+                        System.out.println("|" + (j) + "| " + items.get(i).getName());
                     }
-                    System.out.println("|" + items.length + "| Zavrsetak izbora");
-                    int choice = scanInt(0, items.length);
+                    System.out.println("|" + items.size() + "| Zavrsetak izbora");
+                    int choice = scanInt(0, items.size());
 
 
-
-                    if(i!=0){
-                        if (choice == items.length) {break;
-                        }else {
-                            for (int h=0;h==itemCoutner;h++) {
-                                if(choice==index[h]){
+                    if (i != 0) {
+                        if (choice == items.size()) {
+                            break;
+                        } else {
+                            for (int h = 0; h == itemCoutner; h++) {
+                                if (choice == index[h]) {
                                     throw new Duplicate_Item("Artiikl vec postoji");
                                 }
                             }
-                            finalItems = addItem(items, items[choice]);
-                            index[itemCoutner] = items[choice].getIndex();
+                            //finalItems = addItem(items, items.get(choice));
+                            finalItemSet.add(items.get(choice));
+                            index[itemCoutner] = items.get(choice).getIndex();
                             itemCoutner++;
                         }
-                    }else{
-                        finalItems = addItem(items, items[choice]);
-                        index[itemCoutner] = items[choice].getIndex();
+                    } else {
+                        finalItems = addItem(items, items.get(choice));
+                        finalItemSet.add(items.get(choice));
+                        index[itemCoutner] = items.get(choice).getIndex();
                         itemCoutner++;
-                        }  
-                    } catch (Duplicate_Item ex){
-                        System.out.println(ex.getMessage());
                     }
-
-
-
+                } catch (Duplicate_Item ex) {
+                    System.out.println(ex.getMessage());
                 }
 
 
-            factories[i] = new Factory(name, finalItems, address);
+            }
+
+
+            factories[i] = new Factory(name, finalItemSet, address);
 
         }
         return factories;
     }
 
-    private static Store[] setStores(Item[] items) {
+
+
+  /*  private static Store[] setStores(Item[] items) {
         Store[] stores = new Store[NUM_STORES];
         Item[] itemsCopy = Arrays.copyOf(items, items.length);
         for (int i = 0; i < NUM_STORES; i++) {
@@ -433,14 +449,14 @@ public class Main {
             stores[i] = new Store(name, webAdresa, finalItems);
         }
         return stores;
-    }
+    }*/
 
 
     public static void main(String[] args) {
-         Category[] categories = setCategories();
-        Item[] items = setItems(categories);
+        Category[] categories = setCategories();
+        List<Item> itemList = setItems(categories);
         //findMostCaloricFood(items);
-        Factory[] factories = setFactories(items);
+        Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));

@@ -36,4 +36,14 @@ public class Krumpir extends Item implements Edible {
     public void setWeightKG(BigDecimal weightKG) {
         this.weightKG = weightKG;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

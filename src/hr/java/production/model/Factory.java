@@ -3,13 +3,14 @@ package hr.java.production.model;
 import hr.java.production.main.NamedEntity;
 
 import java.util.Arrays;
+import java.util.Set;
 
 public class Factory extends NamedEntity {
     private String name;
-    private Item[] items;
+    private Set<Item> items;
     private Address address;
 
-    public Factory(String name, Item[] items, Address address) {
+    public Factory(String name, Set<Item> items, Address address) {
         super(name);
         this.items = items;
         this.address = address;
@@ -23,11 +24,11 @@ public class Factory extends NamedEntity {
         this.name = name;
     }
 
-    public Item[] getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
-    public void setItems(Item[] items) {
+    public void setItems(Set<Item> items ) {
         this.items = items;
     }
 
@@ -40,11 +41,12 @@ public class Factory extends NamedEntity {
     }
 
     @Override
-    public String toString() {
-        return "Factory{" +
-                "name='" + name + '\'' +
-                ", items=" + Arrays.toString(items) +
-                ", address=" + address +
-                '}';
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

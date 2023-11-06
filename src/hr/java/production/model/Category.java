@@ -27,4 +27,13 @@ public class Category extends NamedEntity {
         this.description = description;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }
