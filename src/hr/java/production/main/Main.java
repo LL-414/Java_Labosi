@@ -455,11 +455,16 @@ public class Main {
     public static void main(String[] args) {
         Category[] categories = setCategories();
         List<Item> itemList = setItems(categories);
+        Map<Category,List<Item>> mapCategories = setMapCategories();
         //findMostCaloricFood(items);
         Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
 
+    }
+
+    private static Map<Category, List<Item>> setMapCategories() {
+    return null;
     }
 }
