@@ -9,7 +9,7 @@ public class Item extends NamedEntity {
     protected Category category;
     protected BigDecimal width, height, length, productionCost, sellingPrice;
     protected Discount discount;
-
+    protected Integer warranty;
 
     protected Item(Builder builder) {
         super(builder.name);
@@ -21,10 +21,12 @@ public class Item extends NamedEntity {
         this.sellingPrice = builder.sellingPrice;
         this.discount = builder.discount;
         this.index = builder.index;
+        this.warranty = builder.warranty;
     }
 
     public static class Builder {
         private String name;
+        private Integer warranty;
         private Integer index;
         private Category category;
         private BigDecimal width, height, length, productionCost, sellingPrice;
@@ -39,7 +41,10 @@ public class Item extends NamedEntity {
             this.index = index;
             return this;
         }
-
+        public Builder warranty(Integer warranty){
+            this.warranty = warranty;
+            return this;
+        }
         public Builder category(Category category) {
             this.category = category;
             return this;
@@ -111,6 +116,10 @@ public class Item extends NamedEntity {
 
     public Discount getDiscount() {
         return discount;
+    }
+
+    public Integer getWarranty() {
+        return warranty;
     }
 
     @Override

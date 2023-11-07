@@ -13,6 +13,11 @@ public class ProductionSorter implements Comparator<Item> {
        return o1.getSellingPrice().compareTo(o2.getSellingPrice());
     }
 
+
+    public int compareWarrantes(Item o1, Item o2) {
+        return o1.getWarranty().compareTo(o2.getWarranty());
+    }
+
     @Override
     public Comparator<Item> reversed() {
         return Comparator.super.reversed();

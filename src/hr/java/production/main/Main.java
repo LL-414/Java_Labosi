@@ -8,6 +8,7 @@ import hr.java.production.sort.ProductionSorter;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.PublicKey;
 import java.util.*;
 import java.util.List;
@@ -208,20 +209,22 @@ public class Main {
     //____________________________________________________________________________________________________________
 
     public static Item setArticles(int i, Category[] categories, int izbor) {
-        System.out.println("Unesite ime " + (i) + ". artikla:");
+        System.out.println("Unesite ime " + (i+1) + ". artikla:");
         String name = scanner.nextLine();
-        System.out.println("Unesite sirinu " + (i) + ". artikla:");
+        System.out.println("Unesite sirinu " + (i+1) + ". artikla:");
         BigDecimal sirina = scanBigDecimal();
-        System.out.println("Unesite visinu " + (i) + ". artikla:");
+        System.out.println("Unesite visinu " + (i+1) + ". artikla:");
         BigDecimal visina = scanBigDecimal();
-        System.out.println("Unesite duzinu " + (i) + ". artikla:");
+        System.out.println("Unesite duzinu " + (i+1) + ". artikla:");
         BigDecimal duzina = scanBigDecimal();
-        System.out.println("Unesite cijenu izrade " + (i) + ". artikla:");
+        System.out.println("Unesite cijenu izrade " + (i+1) + ". artikla:");
         BigDecimal cijenaIzrade = scanBigDecimal();
-        System.out.println("Unesite prodajnu cijenu " + (i) + ". artikla:");
+        System.out.println("Unesite prodajnu cijenu " + (i+1) + ". artikla:");
         BigDecimal prodajnaCijena = scanBigDecimal();
         System.out.println("Unesite popust pri prodaji ako nema popusta unesite 0:");
         BigDecimal discount = scanBigDecimal(BigDecimal.valueOf(0), BigDecimal.valueOf(100));
+        System.out.printf("Unesite garanciju artikla(0-24 mjeseca):");
+        Integer warranty = scanInt(0,24);
 
         if (discount.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal discountedPrice = prodajnaCijena.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(100))));
@@ -233,6 +236,7 @@ public class Main {
                     .productionCost(cijenaIzrade)
                     .sellingPrice(discountedPrice)
                     .index(i)
+                    .warranty(warranty)
                     .build();
         } else {
             return new Item.Builder(name)
@@ -243,6 +247,7 @@ public class Main {
                     .productionCost(cijenaIzrade)
                     .sellingPrice(prodajnaCijena)
                     .index(i)
+                    .warranty(warranty)
                     .build();
         }
     }
@@ -457,6 +462,7 @@ public class Main {
         Category[] categories = setCategories();
         List<Item> itemList = setItems(categories);
         Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
+        warrantyItems(mapCategories);
         //findMostCaloricFood(items);
         //Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
@@ -464,6 +470,62 @@ public class Main {
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
 
     }
+
+    public static void warrantyItems(Map<Category, List<Item>> mapa){
+        BigDecimal prosjek = new BigDecimal(0);
+        BigDecimal counter= new BigDecimal(0);
+        for (Category cat: mapa.keySet()
+             ) {
+            mapa.get(cat).sort(new ProductionSorter()::compareWarrantes);
+            for (int i = 0; i < mapa.get(cat).size(); i++) {
+                if(mapa.get(cat).get(i).getSellingPrice().compareTo(BigDecimal.valueOf(30))>0){
+                    prosjek = prosjek.add(BigDecimal.valueOf(mapa.get(cat).get(i).getWarranty())) ;
+                   counter = counter.add(BigDecimal.valueOf(1));
+                }
+
+            }
+        }
+        if(prosjek.equals(BigDecimal.valueOf(0))){
+            System.out.printf("Niti jedan item nema garanciju");
+        }else {
+            System.out.println("Prosjecna garancija svih itema je:"+( prosjek.divide(counter, 2, RoundingMode.HALF_UP)));
+
+        }
+        for (Category cat: mapa.keySet()
+        ) {
+            System.out.println("Kategorija :"+cat.getName());
+            for (int i = 0; i < mapa.get(cat).size(); i++) {
+                System.out.println("Item "
+                        +mapa.get(cat).get(i).getName()
+                        +" rednog broja "
+                        +(i+1)
+                        +" ima garaciju:"
+                        +mapa.get(cat).get(i).getWarranty()
+
+                );
+
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private static Map<Category, List<Item>> setMapCategories(Category[] categories, List<Item> items) {
         Map<Category, List<Item>> returner = new HashMap<>();
