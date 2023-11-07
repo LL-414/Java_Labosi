@@ -3,6 +3,7 @@ package hr.java.production.main;
 import hr.java.production.enumerator.Gradovi;
 import hr.java.production.exception.Duplicate_Item;
 import hr.java.production.model.*;
+import hr.java.production.sort.ProductionSorter;
 
 
 import java.awt.*;
@@ -297,7 +298,7 @@ public class Main {
     }
 
     private static List<Item> setItems(Category[] categories) {
-        Item[] items = new Item[NUM_ITEMS];
+        // Item[] items = new Item[NUM_ITEMS];
         List<Item> itemList = new ArrayList<>(NUM_ITEMS);
         for (int i = 0; i < NUM_ITEMS; i++) {
             System.out.println("Izaberite kategoriju " + (i + 1) + ". artikla:");
@@ -312,17 +313,17 @@ public class Main {
                 System.out.print("Molimo upisite kolicinu hrane u KG sa decimalom:");
                 BigDecimal kilaHrane = scanBigDecimal();
                 if (izborHrane == 1) {
-                    items[i] = setBanana(kilaHrane, i);
+                    //items[i] = setBanana(kilaHrane, i);
                     itemList.add(setBanana(kilaHrane, i));
                 } else {
-                    items[i] = setKrumpir(kilaHrane, i);
+                    // items[i] = setKrumpir(kilaHrane, i);
                     itemList.add(setKrumpir(kilaHrane, i));
                 }
             } else if (izbor == 2) {
-                items[i] = setLaptop(i);
+                //items[i] = setLaptop(i);
                 itemList.add(setLaptop(i));
             } else {
-                items[i] = setArticles(i, categories, izbor);
+                // items[i] = setArticles(i, categories, izbor);
                 itemList.add(setArticles(i, categories, izbor));
             }
         }
@@ -349,7 +350,7 @@ public class Main {
             System.out.println("Napisite grad u kojoj se nalazi tvornica");
             System.out.println("1 Ivanic|2 Zagreb|3 Sesvete");
             int grad = scanInt(1, 3);
-            Gradovi gradovi= Gradovi.IVANIC_GRAD;
+            Gradovi gradovi = Gradovi.IVANIC_GRAD;
             switch (grad) {
                 case (1):
                     break;
@@ -455,16 +456,41 @@ public class Main {
     public static void main(String[] args) {
         Category[] categories = setCategories();
         List<Item> itemList = setItems(categories);
-        Map<Category,List<Item>> mapCategories = setMapCategories();
+        Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
         //findMostCaloricFood(items);
-        Factory[] factories = setFactories(itemList);
+        //Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
 
     }
 
-    private static Map<Category, List<Item>> setMapCategories() {
-    return null;
+    private static Map<Category, List<Item>> setMapCategories(Category[] categories, List<Item> items) {
+        Map<Category, List<Item>> returner = new HashMap<>();
+        for (Category cat : categories
+        ) {
+            returner.put(cat, mapItem(cat, items));
+
+            if (returner.get(cat).size() != 0) {
+                returner.get(cat).sort(new ProductionSorter());
+            }
+        }
+
+
+        return returner;
     }
+
+    public static List<Item> mapItem(Category cat, List<Item> ite) {
+        List<Item> returnlist = new ArrayList<>();
+        for (Item items : ite
+        ) {
+            if (cat.equals(items.getCategory())) {
+                returnlist.add(items);
+            }
+        }
+
+        return returnlist;
+    }
+
+
 }
