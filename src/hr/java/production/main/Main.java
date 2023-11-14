@@ -8,6 +8,8 @@ import hr.java.production.sort.ProductionSorter;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.util.*;
 import java.util.List;
@@ -453,12 +455,43 @@ public class Main {
     }*/
 
 
+    public static void testStack(Factory[] factories) {
+        GenericStack<Factory> stack = new GenericStack<>();
+        try {
+            for (Factory f : factories
+            ) {
+                stack.push(f);
+            }
+            System.out.println(stack.peek().getName());
+
+            for (Factory f : factories
+            ) {
+                System.out.println(stack.pop().getName());
+            }
+            stack.peek();
+        } catch (NoSuchElementException exception) {
+            System.out.println("Stack je prazan");
+        }
+
+    }
+
+    public static BigDecimal calculateAveragePriceOfLargeItems(List<Item> items) {
+        return items.stream()
+                .filter(item -> item.calculateVolume().compareTo(BigDecimal.valueOf(30)) > 0)
+                .map(Item::getSellingPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(BigDecimal.valueOf(
+                        items.stream()
+                                .filter(item -> item.calculateVolume().compareTo(BigDecimal.valueOf(30)) > 0)
+                                .count()), RoundingMode.HALF_UP);
+    }
+
     public static void main(String[] args) {
         Category[] categories = setCategories();
         List<Item> itemList = setItems(categories);
         Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
         //findMostCaloricFood(items);
-        //Factory[] factories = setFactories(itemList);
+        Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
         //System.out.println("Factory with biggest volume is:"+biggestVolume(factories));
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));

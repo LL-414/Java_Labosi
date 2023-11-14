@@ -113,6 +113,10 @@ public class Item extends NamedEntity {
         return discount;
     }
 
+    public BigDecimal calculateVolume() {
+        return width.multiply(height).multiply(length);
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();
