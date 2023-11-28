@@ -42,6 +42,22 @@ public static class AddressBuilder {
     }
 }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+
+    public Gradovi getGradovi() {
+        return gradovi;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();

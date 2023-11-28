@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -503,6 +504,42 @@ private static Category[] setCategories() {
     }
 
 
+    private static List<Factory> setFactoriesWithFile(List<Item> items, List<Address> addresses, String fileName) {
+        List<Factory> factories = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                long factoryId = Long.parseLong(line.trim());
+                String factoryName = reader.readLine().trim();
+                long addressId = Long.parseLong(reader.readLine().trim());
+                Address factoryAddress = addresses.stream()
+                        .filter(a -> a.getId().equals(addressId))
+                        .findFirst()
+                        .orElse(null); // Handle the case where address is not found
+
+                Set<Item> factoryItems = new HashSet<>();
+                List<Long> itemIds = Arrays.stream(reader.readLine().split(","))
+                        .map(String::trim)
+                        .map(Long::parseLong)
+                        .collect(Collectors.toList());
+
+                for (Long itemId : itemIds) {
+                    items.stream()
+                            .filter(i -> i.getId().equals(itemId))
+                            .findFirst()
+                            .ifPresent(factoryItems::add);
+                }
+
+                Factory factory = new Factory(factoryName, factoryId, factoryItems, factoryAddress);
+                factories.add(factory);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return factories;
+    }
+
+
 
   /*  private static Store[] setStores(Item[] items) {
         Store[] stores = new Store[NUM_STORES];
@@ -550,6 +587,10 @@ private static Category[] setCategories() {
 
         String adressFILE = String.valueOf(Path.of("src/hr/java/production/dat/adresses.txt"));
         List<Address> addressList = readAddressesFromFile(adressFILE);
+
+        String factoryFile = String.valueOf(Path.of("src/hr/java/production/dat/factories.txt"));
+        List<Factory> factoryList = setFactoriesWithFile(itemList,addressList,factoryFile);
+
         //Category[] categories = setCategories();
        // List<Item> itemList = setItems(categories);
         //Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
