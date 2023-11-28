@@ -2,7 +2,9 @@ package hr.java.production.model;
 
 import hr.java.production.main.NamedEntity;
 
-public class Category extends NamedEntity {
+import java.io.Serializable;
+
+public class Category extends NamedEntity implements Serializable {
     private String  description;
 
     public Category(String name,Long id, String description) {

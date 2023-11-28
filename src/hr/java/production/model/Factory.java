@@ -2,16 +2,21 @@ package hr.java.production.model;
 
 import hr.java.production.main.NamedEntity;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
-public class Factory extends NamedEntity {
+public class Factory extends NamedEntity implements Serializable {
    // private String name;
-
+   @Serial
+   private static final long serialVersionUID = 1L;
     private Set<Item> items;
     private Address address;
 
-    public Factory(String name,Long id, Set<Item> items, Address address) {
+
+
+    public Factory(String name, Long id, Set<Item> items, Address address) {
         super(name,id);
         this.items = items;
         this.address = address;

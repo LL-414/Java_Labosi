@@ -2,9 +2,10 @@ package hr.java.production.model;
 
 import hr.java.production.main.NamedEntity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Item extends NamedEntity {
+public class Item extends NamedEntity implements Serializable {
     protected Category category;
     protected BigDecimal width, height, length, productionCost, sellingPrice;
     protected Discount discount;
@@ -117,5 +118,13 @@ public class Item extends NamedEntity {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "category=" + category +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

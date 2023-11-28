@@ -1,6 +1,8 @@
 package hr.java.production.main;
 
-public abstract class NamedEntity {
+import java.io.Serializable;
+
+public abstract class NamedEntity implements Serializable {
     protected String name;
     protected Long id;
 
@@ -8,6 +10,8 @@ public abstract class NamedEntity {
         this.name = name;
         this.id = id;
     }
+
+
 
     public String getName() {
         return name;

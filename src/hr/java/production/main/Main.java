@@ -577,7 +577,24 @@ private static Category[] setCategories() {
         return stores;
     }*/
 
+    public static void serializeFactoryList(List<Factory> factories, String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
 
+                oos.writeObject(factories);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static List<Factory> deserializeFactoryList(String fileName) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (List<Factory>) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // Return null or handle it as per your requirement
+        }
+    }
     public static void main(String[] args) {
 
 
@@ -591,6 +608,9 @@ private static Category[] setCategories() {
         String factoryFile = String.valueOf(Path.of("src/hr/java/production/dat/factories.txt"));
         List<Factory> factoryList = setFactoriesWithFile(itemList,addressList,factoryFile);
 
+        serializeFactoryList(factoryList,"src/hr/java/production/dat/serijalizaneTvornice.bin");
+        List<Factory> test = deserializeFactoryList(String.valueOf(Path.of("src/hr/java/production/dat/serijalizaneTvornice.bin")));
+        System.out.println(test.getFirst().getName()+test.getFirst().getItems().stream().findAny().toString());
         //Category[] categories = setCategories();
        // List<Item> itemList = setItems(categories);
         //Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);

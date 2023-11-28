@@ -3,7 +3,9 @@ package hr.java.production.model;
 
 import hr.java.production.enumerator.Gradovi;
 
-public class Address  {
+import java.io.Serializable;
+
+public class Address implements Serializable {
     private String street, houseNumber;
     Gradovi gradovi;
     Long id;
