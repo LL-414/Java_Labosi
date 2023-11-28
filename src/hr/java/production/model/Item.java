@@ -5,40 +5,37 @@ import hr.java.production.main.NamedEntity;
 import java.math.BigDecimal;
 
 public class Item extends NamedEntity {
-    protected Integer index;
     protected Category category;
     protected BigDecimal width, height, length, productionCost, sellingPrice;
     protected Discount discount;
 
 
     protected Item(Builder builder) {
-        super(builder.name);
+        super(builder.name,builder.id);
         this.category = builder.category;
         this.width = builder.width;
         this.height = builder.height;
         this.length = builder.length;
         this.productionCost = builder.productionCost;
         this.sellingPrice = builder.sellingPrice;
-        this.discount = builder.discount;
-        this.index = builder.index;
     }
 
     public static class Builder {
         private String name;
-        private Integer index;
+        private Long id;
+
         private Category category;
         private BigDecimal width, height, length, productionCost, sellingPrice;
         private Discount discount;
 
 
-        public Builder(String name) {
+        public Builder(String name,Long id) {
             this.name = name;
+            this.id = id;
         }
 
-        public Builder index(Integer index) {
-            this.index = index;
-            return this;
-        }
+
+
 
         public Builder category(Category category) {
             this.category = category;
@@ -97,9 +94,6 @@ public class Item extends NamedEntity {
         return length;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
 
     public BigDecimal getProductionCost() {
         return productionCost;
@@ -108,6 +102,8 @@ public class Item extends NamedEntity {
     public BigDecimal getSellingPrice() {
         return sellingPrice;
     }
+
+
 
     public Discount getDiscount() {
         return discount;

@@ -1,4 +1,6 @@
-package hr.java.production.model;
+package hr.java.production.interfaces;
+
+import hr.java.production.model.Item;
 
 public final class Laptop extends Item implements Technical {
 

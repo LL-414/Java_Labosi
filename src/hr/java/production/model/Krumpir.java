@@ -1,6 +1,6 @@
 package hr.java.production.model;
 
-import hr.java.production.main.Edible;
+import hr.java.production.interfaces.Edible;
 
 import java.math.BigDecimal;
 

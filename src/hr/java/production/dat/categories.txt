@@ -1,0 +1,18 @@
+0
+Food
+Is edible.
+1
+Laptop
+In this category you can find all kinds of laptops.
+2
+Literature
+In this category you can find books, comics etc.
+3
+Beverages
+In this category you can find beer, water etc.
+4
+Food
+In this category you can find all kinds of food except bananas and potatoes.
+5
+Video Games
+In this category you can find all sorts of video games.

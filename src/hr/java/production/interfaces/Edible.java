@@ -1,4 +1,4 @@
-package hr.java.production.main;
+package hr.java.production.interfaces;
 
 import java.math.BigDecimal;
 

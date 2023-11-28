@@ -2,16 +2,27 @@ package hr.java.production.main;
 
 public abstract class NamedEntity {
     protected String name;
+    protected Long id;
 
-    public NamedEntity(String name) {
+    public NamedEntity(String name, Long id) {
         this.name = name;
+        this.id = id;
     }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

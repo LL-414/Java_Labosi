@@ -7,11 +7,12 @@ import java.util.Set;
 
 public class Factory extends NamedEntity {
     private String name;
+
     private Set<Item> items;
     private Address address;
 
-    public Factory(String name, Set<Item> items, Address address) {
-        super(name);
+    public Factory(String name,Long id, Set<Item> items, Address address) {
+        super(name,id);
         this.items = items;
         this.address = address;
     }

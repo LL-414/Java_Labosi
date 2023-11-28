@@ -6,10 +6,12 @@ import hr.java.production.enumerator.Gradovi;
 public class Address  {
     private String street, houseNumber;
     Gradovi gradovi;
+    Long id;
 public static class AddressBuilder {
     Gradovi gradovi;
     private String street;
     private String houseNumber;
+    private Long id;
 
     public AddressBuilder setStreet(String street) {
         this.street = street;
@@ -25,12 +27,17 @@ public static class AddressBuilder {
         this.gradovi = gradovi;
         return this;
     }
+    public AddressBuilder setIndex(Long id){
+        this.id = id;
+        return this;
+    }
 
     public Address createAddress() {
         Address address = new Address();
         address.houseNumber = this.houseNumber;
         address.street = this.street;
         address.gradovi = this.gradovi;
+        address.id  = this.id;
         return address;
     }
 }

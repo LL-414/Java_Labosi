@@ -2,13 +2,17 @@ package hr.java.production.main;
 
 import hr.java.production.enumerator.Gradovi;
 import hr.java.production.exception.Duplicate_Item;
+import hr.java.production.interfaces.Edible;
+import hr.java.production.interfaces.Laptop;
+import hr.java.production.interfaces.Technical;
 import hr.java.production.model.*;
 import hr.java.production.sort.ProductionSorter;
 
 
-import java.awt.*;
+import java.io.*;
 import java.math.BigDecimal;
-import java.security.PublicKey;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -20,6 +24,8 @@ public class Main {
     private static final Integer NUM_FACTORIES = 2;
     private static final Integer NUM_STORES = 2;
     static Scanner scanner = new Scanner(System.in);
+
+
 
     //____________________________________________________________________________________________________________
     public static Item[] removeItem(Item[] items, int choice) {
@@ -191,7 +197,7 @@ public class Main {
             for (int j = 0; j < items.length; j++) {
                 BigDecimal itemPrice = items[j].getSellingPrice();
 
-                // Null check before accessing getSellingPrice()
+
                 if (itemPrice != null) {
                     if (itemPrice.compareTo(cheapestPrice) < 0) {
                         cheapestPrice = itemPrice;
@@ -225,26 +231,67 @@ public class Main {
 
         if (discount.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal discountedPrice = prodajnaCijena.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(100))));
-            return new Item.Builder(name)
+            return new Item.Builder(name,(long) i)
                     .category(categories[izbor])
                     .width(sirina)
                     .height(visina)
                     .length(duzina)
                     .productionCost(cijenaIzrade)
                     .sellingPrice(discountedPrice)
-                    .index(i)
                     .build();
         } else {
-            return new Item.Builder(name)
+            return new Item.Builder(name,(long) i)
                     .category(categories[izbor - 1])
                     .width(sirina)
                     .height(visina)
                     .length(duzina)
                     .productionCost(cijenaIzrade)
                     .sellingPrice(prodajnaCijena)
-                    .index(i)
                     .build();
         }
+    }
+
+
+    public static List<Item> setArticlesWithFolder(String fileName, List<Category> categories) {
+        List<Item> items = new ArrayList<>();
+        Long indexCounter = 1L; // Start indexing from 1
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                int categoryIndex = Integer.parseInt(line.trim());
+                String name = reader.readLine();
+                BigDecimal width = new BigDecimal(reader.readLine());
+                BigDecimal height = new BigDecimal(reader.readLine());
+                BigDecimal length = new BigDecimal(reader.readLine());
+                BigDecimal productionCost = new BigDecimal(reader.readLine());
+                BigDecimal sellingPrice = new BigDecimal(reader.readLine());
+                BigDecimal discount = new BigDecimal(reader.readLine());
+
+                BigDecimal discountedPrice = discount.compareTo(BigDecimal.ZERO) > 0
+                        ? sellingPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(100))))
+                        : sellingPrice;
+
+                // Ensure categoryIndex is within the range of the categories list
+                if (categoryIndex >= 0 && categoryIndex < categories.size()) {
+                    Category category = categories.get(categoryIndex);
+
+                    Item item = new Item.Builder(name,indexCounter)
+                            .category(category)
+                            .width(width)
+                            .height(height)
+                            .length(length)
+                            .productionCost(productionCost)
+                            .sellingPrice(discountedPrice)
+                            .build();
+
+                    items.add(item);
+                    indexCounter++;
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     public static Krumpir setKrumpir(BigDecimal kilaHrane, int i) {
@@ -253,9 +300,8 @@ public class Main {
         System.out.println("Unesite cijenu krumpira po kili sa decoimalom:");
         BigDecimal cijenaKrumpira = scanBigDecimal();
         System.out.println("Cijena Krumpira je :" + (cijenaKrumpira.multiply(kilaHrane)));
-        return new Krumpir(new Item.Builder(vrstaKrumpira)
+        return new Krumpir(new Item.Builder(vrstaKrumpira,(long)i)
                 .sellingPrice(cijenaKrumpira)
-                .index(i)
                 , kilaHrane);
     }
 
@@ -265,9 +311,8 @@ public class Main {
         System.out.println("Unesite cijenu banane po kili sa decoimalom:");
         BigDecimal cijenaBanane = scanBigDecimal();
         System.out.println("Cijena banane je :" + (cijenaBanane.multiply(kilaHrane)));
-        return new Banana(new Item.Builder(vrstaBanane)
+        return new Banana(new Item.Builder(vrstaBanane,(long)i)
                 .sellingPrice(cijenaBanane)
-                .index(i)
                 , kilaHrane);
     }
 
@@ -277,25 +322,12 @@ public class Main {
         System.out.println("Unesite ime laptopa:");
         String name = scanner.nextLine();
         return new Laptop.LaptopBuilder()
-                .setBuilder(new Item.Builder(name).sellingPrice(BigDecimal.valueOf(600)).index(i))
+                .setBuilder(new Item.Builder(name,(long)i).sellingPrice(BigDecimal.valueOf(600)))
                 .setWarrantyMonths(garancija)
                 .build();
     }
 
 
-    private static Category[] setCategories() {
-        Category[] categories = new Category[NUM_CATEGORIES + 2];
-        categories[0] = new Category("Food", "Is edible");
-        categories[1] = new Category("Laptop", "Various laptops");
-        for (int i = 2; i < NUM_CATEGORIES + 2; i++) {
-            System.out.println("Upisite ime " + (i - 1) + ". kategorije.");
-            String name = scanner.nextLine();
-            System.out.println("Unesite opis " + (i - 1) + ". kategorije");
-            String description = scanner.nextLine();
-            categories[i] = new Category(name, description);
-        }
-        return categories;
-    }
 
     private static List<Item> setItems(Category[] categories) {
         // Item[] items = new Item[NUM_ITEMS];
@@ -331,6 +363,62 @@ public class Main {
         return itemList;
     }
 //_________________________________________________________________________________
+private static Category[] setCategories() {
+    Category[] categories = new Category[NUM_CATEGORIES + 2];
+    categories[0] = new Category("Food", 0L, "Is edible");
+    categories[1] = new Category("Laptop",1L, "Various laptops");
+    for (int i = 2; i < NUM_CATEGORIES + 2; i++) {
+        System.out.println("Upisite ime " + (i - 1) + ". kategorije.");
+        String name = scanner.nextLine();
+        System.out.println("Unesite opis " + (i - 1) + ". kategorije");
+        String description = scanner.nextLine();
+        categories[i] = new Category(name, (long) i, description);
+    }
+
+
+    return categories;
+}
+
+    public static List<Address> readAddressesFromFile(String fileName) {
+        List<Address> addresses = new ArrayList<>();
+        Long indexCounter = 1L; // Start indexing from 1 as a Long
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String street = line.trim();
+                String houseNumber = reader.readLine().trim();
+                int cityIndex = Integer.parseInt(reader.readLine().trim());
+
+                Gradovi gradovi;
+                switch (cityIndex) {
+                    case 1:
+                        gradovi = Gradovi.IVANIC_GRAD;
+                        break;
+                    case 2:
+                        gradovi = Gradovi.ZAGREB;
+                        break;
+                    case 3:
+                        gradovi = Gradovi.SESVETE;
+                        break;
+                    default:
+                        gradovi = Gradovi.UNKNOWN; // Handle unknown city index
+                        break;
+                }
+
+                Address address = new Address.AddressBuilder()
+                        .setIndex(indexCounter++) // Use Long for the index
+                        .setGradovi(gradovi)
+                        .setStreet(street)
+                        .setHouseNumber(houseNumber)
+                        .createAddress();
+
+                addresses.add(address);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return addresses;
+    }
 
 
     private static Factory[] setFactories(List<Item> items) {
@@ -391,13 +479,13 @@ public class Main {
                             }
                             //finalItems = addItem(items, items.get(choice));
                             finalItemSet.add(items.get(choice));
-                            index[itemCoutner] = items.get(choice).getIndex();
+                            index[itemCoutner] = Math.toIntExact(items.get(choice).getId());
                             itemCoutner++;
                         }
                     } else {
                         finalItems = addItem(items, items.get(choice));
                         finalItemSet.add(items.get(choice));
-                        index[itemCoutner] = items.get(choice).getIndex();
+                        index[itemCoutner] = Math.toIntExact(items.get(choice).getId());
                         itemCoutner++;
                     }
                 } catch (Duplicate_Item ex) {
@@ -408,7 +496,7 @@ public class Main {
             }
 
 
-            factories[i] = new Factory(name, finalItemSet, address);
+            factories[i] = new Factory(name, (long) i, finalItemSet, address);
 
         }
         return factories;
@@ -454,9 +542,17 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Category[] categories = setCategories();
-        List<Item> itemList = setItems(categories);
-        Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
+
+
+        List<Category> categoriesList = setCategoriesWithFile();
+        String itemFile = String.valueOf(Path.of("src/hr/java/production/dat/items.txt"));
+        List<Item> itemList = setArticlesWithFolder(itemFile,categoriesList);
+
+        String adressFILE = String.valueOf(Path.of("src/hr/java/production/dat/adresses.txt"));
+        List<Address> addressList = readAddressesFromFile(adressFILE);
+        //Category[] categories = setCategories();
+       // List<Item> itemList = setItems(categories);
+        //Map<Category, List<Item>> mapCategories = setMapCategories(categories, itemList);
         //findMostCaloricFood(items);
         //Factory[] factories = setFactories(itemList);
         //Store[] stores = setStores(items);
@@ -464,6 +560,29 @@ public class Main {
         //System.out.println("Store with cheapest item is"+cheapestStore(stores));
 
     }
+
+    private static List<Category> setCategoriesWithFile() {
+        String fileName = String.valueOf(Path.of("src/hr/java/production/dat/categories.txt"));
+        List<Category> categories = new ArrayList<>();
+        File file = new File(fileName);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            Optional<String> idOptional;
+            while ((idOptional = Optional.ofNullable(reader.readLine())).isPresent()) {
+
+
+                Long id = Long.parseLong(idOptional.get());
+                String name = reader.readLine();
+                String description = reader.readLine();
+
+                categories.add(new Category(name,id,description));
+            }
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
+        return categories;
+    }
+
 
     private static Map<Category, List<Item>> setMapCategories(Category[] categories, List<Item> items) {
         Map<Category, List<Item>> returner = new HashMap<>();
@@ -480,6 +599,11 @@ public class Main {
         return returner;
     }
 
+
+
+
+
+
     public static List<Item> mapItem(Category cat, List<Item> ite) {
         List<Item> returnlist = new ArrayList<>();
         for (Item items : ite
@@ -488,7 +612,6 @@ public class Main {
                 returnlist.add(items);
             }
         }
-
         return returnlist;
     }
 

@@ -5,8 +5,8 @@ import hr.java.production.main.NamedEntity;
 public class Category extends NamedEntity {
     private String  description;
 
-    public Category(String name, String description) {
-        super(name);
+    public Category(String name,Long id, String description) {
+        super(name,id);
         this.description = description;
     }
 
